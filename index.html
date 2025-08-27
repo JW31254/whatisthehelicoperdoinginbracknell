@@ -1,0 +1,219 @@
+﻿<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>What is the helicopter doing over Bracknell?</title>
+  <meta name="description" content="A very serious and highly scientific explanation for why there's a helicopter over Bracknell. (It changes every time.)" />
+  <meta property="og:title" content="What is the helicopter doing over Bracknell?" />
+  <meta property="og:description" content="A new, definitely accurate reason on every visit." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' x='6' font-size='48'%3E%F0%9F%9A%81%3C/text%3E%3C/svg%3E" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <style>
+    :root{ --bg:#0b1020; --fg:#fff; --muted:#c8d0e0; --accent:#38bdf8; --card:rgba(255,255,255,.08); --shadow:0 10px 30px rgba(0,0,0,.25);} *{box-sizing:border-box}
+    body{margin:0;height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--fg);background:linear-gradient(180deg,#0b132b 0%,#0b1020 100%);display:grid;place-items:center;padding:24px}
+    .wrap{max-width:900px;width:100%} header{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center}
+    .emoji{font-size:54px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));animation:float 3.5s ease-in-out infinite}
+    h1{margin:6px 0 4px;font-weight:800} h1 .town{background:linear-gradient(90deg,#38bdf8,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px;box-shadow:var(--shadow);backdrop-filter:blur(6px);margin-top:18px}
+    .reason{font-size:1.8rem;font-weight:700;margin:0}
+    .meta{margin-top:12px;color:var(--muted);font-size:0.95rem}
+    button{appearance:none;border:0;border-radius:14px;padding:12px 16px;font-weight:700;background:linear-gradient(180deg,#38bdf8,#0ea5e9);color:#001018;cursor:pointer;box-shadow:0 10px 20px rgba(14,165,233,.35)}
+    button.ghost{background:transparent;color:var(--fg);border:1px solid rgba(255,255,255,.15);box-shadow:none}
+    #leafletMap{width:100%;aspect-ratio:16/10;border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+    .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0f1a35;color:#e6eefc}
+    .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);font-size:.85rem}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><div class="emoji">🚁</div><div><h1>What is the helicopter doing over <span class="town">Bracknell</span>?</h1><p class="meta">A totally reliable explanation, refreshed on every visit. Promise.*</p></div></header>
+
+    <section class="card"><p id="reason" class="reason">Loading…</p><p id="meta" class="meta"></p><div class="actions"><button id="reroll">Another reason</button><button id="copy" class="ghost">Copy shareable link</button></div></section>
+
+    <section class="card">
+      <div class="toolbar" style="justify-content:space-between;margin-bottom:10px">
+        <h2 style="margin:0">Live air traffic over Bracknell</h2>
+        <div class="toolbar">
+          <span class="badge">✈️ aircraft · 🚁 helicopters</span>
+          <button id="clearTracks" class="ghost" title="Remove drawn tracks">Clear tracks</button>
+        </div>
+      </div>
+      <div id="leafletMap"></div>
+      <p id="mapMeta" class="meta">Click a marker to draw its recent path.</p>
+    </section>
+
+    <footer class="meta">*Not actually reliable. Please don’t call 999 because of this website. For real updates, check official sources.</footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    (function(){
+      const reasons=[
+        "Doing a lap of Swinley Forest to check the bikes are still faster downhill than cars on the A329(M).",
+        "Trying to find a parking space at The Lexicon that isn’t ‘somewhere near Slough’.",
+        "Counting how many people still call it Princess Square out of habit.",
+        "Providing air support to someone who tried to exit the Skimped Hill roundabout in the correct lane. Heroic.",
+        "Hovering while Google Maps argues with reality at Twin Bridges.",
+        "Checking on Coral Reef to confirm the pirate ship is behaving itself.",
+        "Filming a hard‑hitting documentary: ‘Bin Day: Warfield vs. Binfield’.",
+        "Looking for the elusive shortcut out of Martins Heron that isn’t actually longer.",
+        "Escorting a runaway trolley back to Tesco at Martins Heron with great dignity.",
+        "Auditing garden trampolines that attempted flight over Great Hollands.",
+        "Providing overwatch for the school run through Jennett’s Park. Godspeed.",
+        "Inspecting the queue for a coffee at The Look Out and deciding it’s an incident.",
+        "Confirming that South Hill Park still looks stunning from every angle, even this one.",
+        "Training the ‘tut’ sensor specifically for people who don’t indicate at Peacock Farm.",
+        "Measuring the precise moment traffic on the Downshire Way gives up and becomes vibes only.",
+        "Trying to spot the one person who admits liking the A322 roadworks.",
+        "Running air‑to‑ground banter with the Bracknell Bees scoreboard operator.",
+        "Searching for the mythical unbroken footpath between Crown Wood and Harmans Water.",
+        "Counting how many roundabouts you can see from Birch Hill. It’s a lot.",
+        "Delivering emergency tea to a meeting in the Ring that should’ve been an email.",
+        "Circling until someone finally admits they don’t know which car park is ‘High Street’.",
+        "Checking reports that a train left Bracknell for Waterloo exactly on time. Folklore review in progress.",
+        "Looking for the pub the group chat ‘definitely decided’—somewhere between Wildridings and legend.",
+        "Monitoring a rogue sat nav that keeps insisting ‘M4, five minutes quicker’ from Easthampstead.",
+        "Calibrating sensors to detect when it starts raining precisely after you hang the washing in Great Hollands.",
+        "Providing shade for a very important pigeon outside Fenwick. Don’t ask.",
+        "Following a rumour that Binfield has finally agreed on how to pronounce Binfield.",
+        "Doing a vibe check on the queue for the tip at Longshot Lane. Strong queue energy.",
+        "Searching for a signal upgrade that stops your phone switching to ‘good luck’ near Swinley Park.",
+        "Holding a stern conversation with the wind about sideways rain over Warfield.",
+        "Hovering over the Look Out tower to wave at kids who absolutely spotted us first.",
+        "Conducting a welfare check on a BBQ at Lily Hill Park that started calling itself ‘smoke show’.",
+        "Mapping all the places where the A329(M) decides to be mysterious.",
+        "Delivering a gentle memo: left lane left, right lane right, middle lane therapy.",
+        "Escorting a heroic umbrella across Millennium Way. Fallen but not forgotten.",
+        "Investigating a report of someone getting through Twin Bridges without touching the brakes.",
+        "Checking whether the ice‑cream van in Harmans Water is exceeding safe deliciousness limits.",
+        "Verifying that the squirrels of South Hill Park remain extremely judgmental.",
+        "Providing moral support to parallel parkers outside Waitrose. You’ve got this (probably).",
+        "Chasing a rumour that the Peacock Farm menu now includes ‘Traffic Cone au Gratin’.",
+        "Rehearsing for the Bracknell Air‑ish Show. Exclusively over your house, apparently.",
+        "Surveying the ancient lands of North Ascot to confirm they’re still not Bracknell (discuss).",
+        "Escorting a very lost drone back from Ascot Racecourse with a disappointed shrug.",
+        "Timing how long it takes to get from Wildridings to ‘just popping to Wokingham’.",
+        "Calibrating the 3am mysterious beep detector somewhere between Great Hollands and your sanity.",
+        "Delivering a cease‑and‑desist to the weather for ‘being a bit much’ over Easthampstead Valley.",
+        "Guarding the last patch of sunshine in Berkshire—currently over Bullbrook.",
+        "Listening for anyone pronouncing ‘Bracknell’ with unnecessary flair. We heard you.",
+        "Confirming that yes, those cones did move again overnight. It’s their culture.",
+        "Just flying about a bit over Bracknell. For the vibes."
+      ];
+      const reasonEl=document.getElementById('reason');
+      const metaEl=document.getElementById('meta');
+      const rerollBtn=document.getElementById('reroll');
+      const copyBtn=document.getElementById('copy');
+      function pickReason(){return reasons[Math.floor(Math.random()*reasons.length)]}
+      function setReason(txt){reasonEl.textContent=txt;metaEl.textContent=`Captured at ${new Date().toLocaleTimeString()}`;document.title=`Over Bracknell: ${txt}`}
+      setReason(pickReason());
+      rerollBtn.onclick=()=>setReason(pickReason());
+      copyBtn.onclick=()=>navigator.clipboard.writeText(location.href);
+
+      // --- Map setup ---
+      const map=L.map('leafletMap').setView([51.416,-0.753],11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+
+      // Layers
+      const markersLayer=L.layerGroup().addTo(map);
+      const tracksLayer=L.layerGroup().addTo(map);
+
+      // Rolling history of positions per ICAO24 to draw tracks
+      const history=new Map(); // icao24 -> [{lat,lon,t}]
+      const MAX_POINTS=20;     // keep last N points per aircraft
+      const MAX_AGE_MS=15*60*1000; // drop points older than 15 mins
+
+      // Track polylines by ICAO24 so we can update/remove them
+      const trackLines=new Map();
+      let currentTracked=null;
+
+      // Simple helpers
+      const mapMeta=document.getElementById('mapMeta');
+      function feet(m){return m!=null?m*3.28084:null}
+      function knots(ms){return ms!=null?ms*1.94384:null}
+      function emojiFor(state){
+        const cs=(state[1]||'').toLowerCase();
+        if(state[17]===4) return '🚁';
+        if(cs.includes('heli')||cs.includes('npas')||cs.includes('hems')||cs.includes('pol')) return '🚁';
+        return '✈️';
+      }
+
+      function pruneHistory(list){
+        const cutoff=Date.now()-MAX_AGE_MS;
+        return list.filter(p=>p.t>=cutoff).slice(-MAX_POINTS);
+      }
+
+      function upsertHistory(icao, lat, lon){
+        const arr=history.get(icao)||[];
+        if(!arr.length || Math.hypot(lat-arr[arr.length-1].lat, lon-arr[arr.length-1].lon)>0.0008){
+          arr.push({lat,lon,t:Date.now()});
+        }
+        history.set(icao, pruneHistory(arr));
+      }
+
+      function drawTrack(icao){
+        const pts=(history.get(icao)||[]).map(p=>[p.lat,p.lon]);
+        if(pts.length<2) return;
+        tracksLayer.clearLayers();
+        const line=L.polyline(pts,{color:'#38bdf8',weight:3,opacity:0.9});
+        line.addTo(tracksLayer);
+        trackLines.set(icao,line);
+      }
+
+      function clearTracks(){
+        tracksLayer.clearLayers();
+        trackLines.clear();
+        currentTracked=null;
+      }
+      document.getElementById('clearTracks').addEventListener('click', clearTracks);
+
+      async function fetchData(){
+        mapMeta.textContent='Updating…';
+        markersLayer.clearLayers();
+        try{
+          const resp=await fetch('https://opensky-network.org/api/states/all?lamin=51.2&lomin=-1.1&lamax=51.6&lomax=-0.4');
+          const data=await resp.json();
+          const states=(data.states||[]).filter(s=>s&&s[6]!=null&&s[5]!=null);
+
+          states.forEach(s=>{
+            const icao=s[0];
+            const lat=s[6], lon=s[5];
+            upsertHistory(icao, lat, lon);
+
+            const icon=L.divIcon({html:`<div style="font-size:20px">${emojiFor(s)}</div>`,className:'',iconSize:[20,20],iconAnchor:[10,10]});
+            const marker=L.marker([lat,lon],{icon}).addTo(markersLayer);
+            const alt=feet(s[13]);
+            const spd=knots(s[9]);
+            marker.bindPopup(`
+              <strong>${s[1]||'Unknown'}</strong><br/>
+              ICAO24: ${icao}<br/>
+              Alt: ${alt!=null?Math.round(alt)+' ft':'n/a'} · Spd: ${spd!=null?Math.round(spd)+' kt':'n/a'}
+            `);
+            marker.on('click',()=>{
+              currentTracked=icao;
+              drawTrack(icao);
+              mapMeta.textContent=`Following ${s[1]||icao}. Only this aircraft's track is shown.`;
+            });
+          });
+
+          const total=states.length;
+          if(currentTracked){ drawTrack(currentTracked); }
+          mapMeta.textContent=`Showing ${total} aircraft. Click a marker to follow its track.`;
+        }catch(e){
+          mapMeta.textContent='Live data unavailable (provider error or rate limit).';
+          console.warn(e);
+        }
+      }
+
+      fetchData();
+      setInterval(fetchData,3000);
+    })();
+  </script>
+</body>
+</html>
